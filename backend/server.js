@@ -7,10 +7,17 @@ const registrationRoutes = require("./routes/registrationRoutes");
 
 const app = express();
 
-const PORT = 5000;
+const PORT = Number(process.env.PORT) || 5000;
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ||
+  "https://healthconnect-wine.vercel.app,http://localhost:5173"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 // Home route
@@ -28,7 +35,5 @@ app.use("/api/registrations", registrationRoutes);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(
-    `HealthConnect Backend running on http://localhost:${PORT}`
-  );
+  console.log(`HealthConnect Backend running on port ${PORT}`);
 });
